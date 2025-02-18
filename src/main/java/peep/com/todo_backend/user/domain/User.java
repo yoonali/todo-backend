@@ -57,9 +57,9 @@ public class User extends BaseTimeEntity {
 
     @Comment("마지막 로그인 시간")
     @Column(nullable = false, name = "last_login_date")
-    private LocalDateTime lastLoginDate = LocalDateTime.now();
+    private LocalDateTime lastLoginDate;
 
     @Comment("삭제 여부")
     @Column(nullable = false, name = "is_deleted")
-    private boolean isDeleted = false;
+    private boolean isDeleted;
 }
