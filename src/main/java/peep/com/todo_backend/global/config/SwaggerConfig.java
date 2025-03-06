@@ -1,27 +1,32 @@
 package peep.com.todo_backend.global.config;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
-import lombok.RequiredArgsConstructor;
-import org.springdoc.core.models.GroupedOpenApi;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@OpenAPIDefinition(
-        info = @Info(title = "peep Todo API", version = "v1"))
-@RequiredArgsConstructor
 @Configuration
 public class SwaggerConfig {
 
     @Bean
-    public GroupedOpenApi groupedOpenApi() {
-        String[] paths = {"/**"};
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .addSecurityItem(new SecurityRequirement().addList("JWT"))
+                .components(new Components()
+                        .addSecuritySchemes("JWT", createAPIKeyScheme()))
+                .info(new Info()
+                        .title("Todo Backend API")
+                        .description("API for Todo Backend")
+                        .version("v1.0.0"));
+    }
 
-        return GroupedOpenApi.builder()
-                .group("Peep Todo API v1")
-                .pathsToMatch(paths)
-                .build();
+    private SecurityScheme createAPIKeyScheme() {
+        return new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .scheme("bearer");
     }
 }
-
-
