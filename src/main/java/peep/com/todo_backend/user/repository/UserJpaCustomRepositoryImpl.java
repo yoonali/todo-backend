@@ -10,6 +10,7 @@ public class UserJpaCustomRepositoryImpl implements UserJpaCustomRepository {
 
     /**
      * email 기반 데이터 존재 여부 조회
+     * 
      * @param email
      * @return
      */
@@ -20,7 +21,7 @@ public class UserJpaCustomRepositoryImpl implements UserJpaCustomRepository {
         Integer fetchOne = queryFactory
                 .selectOne()
                 .from(qUser)
-                .where(qUser.email.eq(email))
+                .where(qUser.email.eq(email), qUser.isDeleted.isFalse())
                 .fetchFirst();
 
         return fetchOne != null;

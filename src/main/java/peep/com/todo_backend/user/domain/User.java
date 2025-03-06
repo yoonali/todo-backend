@@ -35,11 +35,11 @@ public class User extends BaseTimeEntity {
     private String email;
 
     @Comment("비밀번호")
-    @Column(length = 120, nullable = false, name = "password")
+    @Column(length = 120, nullable = true, name = "password")
     private String password;
 
     @Comment("소셜 토큰")
-    @Column(length = 150, nullable = false, name = "token")
+    @Column(length = 150, nullable = true, name = "token")
     private String token;
 
     @Comment("유저 타입")
