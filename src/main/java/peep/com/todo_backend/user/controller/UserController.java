@@ -1,11 +1,11 @@
 package peep.com.todo_backend.user.controller;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerApiNotFoundError;
@@ -39,7 +39,7 @@ public class UserController {
     @SwaggerInternetServerError
     @GetMapping("/getUser")
     public ResponseEntity<?> getUser(
-            @RequestParam(name = "userId") @Parameter(description = "조회할 사용자의 ID", required = true) Integer userId) {
+            @AuthenticationPrincipal Integer userId) {
         return userService.getUser(userId);
     }
 
@@ -50,7 +50,7 @@ public class UserController {
     @PutMapping("/updateUser")
     public ResponseEntity<?> updateUser(
             @Valid @RequestBody UserUpdateDto dto,
-            @RequestParam(name = "userId") @Parameter(description = "수정할 사용자의 ID", required = true) Integer userId) {
+            @AuthenticationPrincipal Integer userId) {
         return userService.updateUser(dto, userId);
     }
 
@@ -59,8 +59,7 @@ public class UserController {
     @SwaggerApiNotFoundError
     @SwaggerInternetServerError
     @DeleteMapping("/deleteUser")
-    public ResponseEntity<?> deleteUser(
-            @RequestParam(name = "userId") @Parameter(description = "삭제할 사용자의 ID", required = true) Integer userId) {
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal Integer userId) {
         return userService.deleteUser(userId);
     }
 

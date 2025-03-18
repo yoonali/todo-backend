@@ -108,4 +108,10 @@ public class TeamService {
                 return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "친구 초대 성공", null));
         }
 
+        public List<TeamResponseDto> findPersonalTeamList(Integer userId) {
+                return teamUserJpaRepository.findTeamsByUserIdAndRole(userId, TeamUserRole.ADMIN)
+                                .stream()
+                                .map(TeamResponseDto::new).collect(Collectors.toList());
+        }
+
 }

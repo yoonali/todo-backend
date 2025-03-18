@@ -1,5 +1,6 @@
 package peep.com.todo_backend.user.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,16 +8,23 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import peep.com.todo_backend.global.domain.BaseTimeEntity;
 import peep.com.todo_backend.global.enums.UserRole;
+import peep.com.todo_backend.team.domain.TeamUser;
 
 @Entity
 @Getter
@@ -62,4 +70,14 @@ public class User extends BaseTimeEntity {
     @Comment("삭제 여부")
     @Column(nullable = false, name = "is_deleted")
     private boolean isDeleted;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamUser> teamUsers;
+
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friend> sentFriendRequests;
+
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friend> receivedFriendRequests;
 }

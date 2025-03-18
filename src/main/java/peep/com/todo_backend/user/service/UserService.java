@@ -1,6 +1,7 @@
 package peep.com.todo_backend.user.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +13,13 @@ import org.springframework.stereotype.Service;
 import peep.com.todo_backend.global.Exception.BadRequestException;
 import peep.com.todo_backend.global.dto.ResultDto;
 import peep.com.todo_backend.global.enums.UserRole;
+import peep.com.todo_backend.team.domain.Team;
+import peep.com.todo_backend.team.dto.TeamResponseDto;
+import peep.com.todo_backend.team.service.TeamService;
 import peep.com.todo_backend.user.domain.User;
 import peep.com.todo_backend.user.dto.UserSaveDto;
 import peep.com.todo_backend.user.dto.UserUpdateDto;
+import peep.com.todo_backend.user.dto.UserWithTeamsResponseDto;
 import peep.com.todo_backend.user.repository.UserJpaRepository;
 
 @RequiredArgsConstructor
@@ -23,6 +28,8 @@ import peep.com.todo_backend.user.repository.UserJpaRepository;
 public class UserService {
     private final UserJpaRepository userJpaRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final TeamService teamService;
 
     public ResponseEntity<?> saveUser(UserSaveDto dto) {
         Optional<User> existingUser = userJpaRepository.findByEmail(dto.getEmail());
@@ -61,7 +68,10 @@ public class UserService {
         User user = userJpaRepository.findByUserIdAndIsDeletedFalse(userId)
                 .orElseThrow(() -> new BadRequestException("존재하지 않거나 삭제된 사용자입니다."));
 
-        return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), user));
+        List<TeamResponseDto> team = teamService.findPersonalTeamList(userId);
+
+        UserWithTeamsResponseDto responseDto = new UserWithTeamsResponseDto(user, team);
+        return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), responseDto));
     }
 
     // ** 회원 정보 업데이트 (Soft Delete 적용)
