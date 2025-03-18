@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import peep.com.todo_backend.global.Exception.BadRequestException;
 import peep.com.todo_backend.global.dto.ResultDto;
 import peep.com.todo_backend.global.enums.UserRole;
-import peep.com.todo_backend.team.domain.Team;
 import peep.com.todo_backend.team.dto.TeamResponseDto;
 import peep.com.todo_backend.team.service.TeamService;
 import peep.com.todo_backend.user.domain.User;
