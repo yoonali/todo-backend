@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class TeamSaveDto {
+
     @Schema(description = "팀 이름", example = "PEEP")
     @NotNull(message = "팀 이름은 필수값입니다.")
     private String name;

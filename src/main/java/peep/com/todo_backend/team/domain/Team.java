@@ -1,18 +1,28 @@
 package peep.com.todo_backend.team.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import peep.com.todo_backend.global.domain.BaseTimeEntity;
 
 @Entity
@@ -46,4 +56,23 @@ public class Team extends BaseTimeEntity {
     @Comment("종료 날짜")
     @Column(nullable = false, name = "end_date")
     private LocalDate endDate;
+
+    @Comment("초대 링크")
+    @Column(length = 255, name = "invite_link")
+    private String inviteLink;
+
+    @Comment("초대 링크 만료 시간")
+    @Column(name = "invite_expiry")
+    private LocalDateTime inviteExpiry;
+
+    @Comment("삭제 여부")
+    @Column(nullable = false, name = "is_deleted")
+    private boolean isDeleted;
+
+    @Column(unique = true, nullable = false)
+    private String teamToken;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamUser> teamUsers;
 }
