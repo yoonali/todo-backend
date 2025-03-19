@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +17,7 @@ import peep.com.todo_backend.team.domain.Team;
 import peep.com.todo_backend.team.domain.TeamUser;
 import peep.com.todo_backend.team.dto.TeamResponseDto;
 import peep.com.todo_backend.team.dto.TeamSaveDto;
+import peep.com.todo_backend.team.dto.dtoConverter.TeamDtoConverter;
 import peep.com.todo_backend.team.repository.TeamJpaRepository;
 import peep.com.todo_backend.team.repository.TeamUserJpaRepository;
 import peep.com.todo_backend.user.domain.User;
@@ -32,7 +32,7 @@ public class TeamService {
         private final TeamUserJpaRepository teamUserJpaRepository;
         private final UserJpaRepository userJpaRepository;
 
-        public ResponseEntity<?> saveTeam(TeamSaveDto dto, Integer userId) {
+        public String saveTeam(TeamSaveDto dto, Integer userId) {
 
                 User user = userJpaRepository.findById(userId)
                                 .orElseThrow(() -> new BadRequestException("존재하지 않는 유저입니다."));
@@ -61,17 +61,17 @@ public class TeamService {
 
                 teamUserJpaRepository.save(teamUser);
 
-                return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "팀이 성공적으로 생성되었습니다.", team.getInviteLink()));
+                return team.getInviteLink();
         }
 
         // 팀 정보 조회
-        public ResponseEntity<?> getTeam(String teamToken) {
+        public TeamResponseDto getTeam(String teamToken) {
                 Team team = teamJpaRepository.findByTeamToken(teamToken)
                                 .orElseThrow(() -> new BadRequestException("존재하지 않거나 삭제된 팀입니다."));
 
-                TeamResponseDto responseDto = new TeamResponseDto(team);
+                TeamResponseDto responseDto = TeamDtoConverter.toResponseDto(team);
 
-                return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "팀 정보 조회 성공", responseDto));
+                return responseDto;
         }
 
         // 팀 정보 수정
@@ -108,10 +108,8 @@ public class TeamService {
                 return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "친구 초대 성공", null));
         }
 
-        public List<TeamResponseDto> findPersonalTeamList(Integer userId) {
-                return teamUserJpaRepository.findTeamsByUserIdAndRole(userId, TeamUserRole.ADMIN)
-                                .stream()
-                                .map(TeamResponseDto::new).collect(Collectors.toList());
+        public List<Team> findPersonalTeamList(Integer userId) {
+                return teamUserJpaRepository.findTeamsByUserIdAndRole(userId, TeamUserRole.ADMIN);
         }
 
 }

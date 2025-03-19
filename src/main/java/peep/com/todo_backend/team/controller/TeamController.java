@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerApiNotFoundError;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerApiSuccess;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerInternetServerError;
+import peep.com.todo_backend.global.dto.ResultDto;
+import peep.com.todo_backend.team.dto.TeamResponseDto;
 import peep.com.todo_backend.team.dto.TeamSaveDto;
 import peep.com.todo_backend.team.service.TeamService;
 
@@ -32,7 +36,8 @@ public class TeamController {
     @SwaggerInternetServerError
     @PostMapping
     public ResponseEntity<?> saveTeam(@Valid @RequestBody TeamSaveDto dto, @AuthenticationPrincipal Integer userId) {
-        return teamService.saveTeam(dto, userId);
+        String inviteLink = teamService.saveTeam(dto, userId);
+        return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "SUCCESS", "팀이 성공적으로 생성되었습니다.", inviteLink));
     }
 
     @SwaggerApiSuccess(summary = "팀 정보 조회", description = "팁 정보를 조회합니다.")
@@ -41,6 +46,8 @@ public class TeamController {
     @GetMapping("/getTeam")
     public ResponseEntity<?> getTeam(
             @RequestParam(name = "teamToken") @Parameter(description = "조회할 팀의 토큰", required = true) String teamToken) {
-        return teamService.getTeam(teamToken);
+        TeamResponseDto responseDto = teamService.getTeam(teamToken);
+
+        return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "SUCCESS", "팀 정보 조회 성공", responseDto));
     }
 }
