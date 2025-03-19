@@ -1,30 +1,21 @@
 package peep.com.todo_backend.team.dto;
 
+import java.time.LocalDate;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import peep.com.todo_backend.team.domain.Team;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class TeamResponseDto {
-    private String name;
-    private String projectName;
-    private String description;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String inviteLink;
-    private LocalDateTime inviteExpiry;
+public class TeamResponseDto extends TeamDto {
+    private Integer id;
+    private String teamToken;
 
-    public TeamResponseDto(Team team) {
-        this.name = team.getName();
-        this.projectName = team.getProjectName();
-        this.description = team.getDescription();
-        this.startDate = team.getStartDate();
-        this.endDate = team.getEndDate();
-        this.inviteLink = team.getInviteLink();
-        this.inviteExpiry = team.getInviteExpiry();
+    public TeamResponseDto(Integer id, String name, String projectName, String description, String teamToken,
+            LocalDate startDate,
+            LocalDate endDate) {
+        super(name, projectName, description, startDate, endDate);
+        this.id = id;
+        this.teamToken = teamToken;
     }
 }
