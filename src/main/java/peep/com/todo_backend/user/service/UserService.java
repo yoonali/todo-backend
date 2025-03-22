@@ -6,11 +6,9 @@ import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import peep.com.todo_backend.global.Exception.BadRequestException;
-import peep.com.todo_backend.global.dto.ResultDto;
 import peep.com.todo_backend.global.enums.UserRole;
 import peep.com.todo_backend.team.domain.Team;
 import peep.com.todo_backend.team.service.TeamService;
@@ -29,7 +27,7 @@ public class UserService {
 
     private final TeamService teamService;
 
-    public ResultDto<?> saveUser(UserSaveDto dto) {
+    public void saveUser(UserSaveDto dto) {
         Optional<User> existingUser = userJpaRepository.findByEmail(dto.getEmail());
 
         if (existingUser.isPresent()) {
@@ -57,8 +55,6 @@ public class UserService {
                 .build();
 
         userJpaRepository.save(newUser);
-
-        return ResultDto.res(HttpStatus.OK, "SUCCESS", "회원가입 성공");
     }
 
     // ** 회원 정보 조회
@@ -72,31 +68,27 @@ public class UserService {
     }
 
     // ** 회원 정보 업데이트 (Soft Delete 적용)
-    public ResultDto<?> updateUser(UserUpdateDto dto, Integer userId) {
+    public void updateUser(UserUpdateDto dto, Integer userId) {
         User user = userJpaRepository.findByUserIdAndIsDeletedFalse(userId)
                 .orElseThrow(() -> new BadRequestException("존재하지 않거나 삭제된 사용자입니다."));
 
         user.setNickname(dto.getNickName());
 
         userJpaRepository.save(user);
-
-        return ResultDto.res(HttpStatus.OK, "SUCCESS", "회원 정보 수정 성공");
     }
 
     // ** 회원 정보 삭제 (Soft Delete 적용)
-    public ResultDto<?> deleteUser(Integer userId) {
+    public void deleteUser(Integer userId) {
         User user = userJpaRepository.findByUserIdAndIsDeletedFalse(userId)
                 .orElseThrow(() -> new BadRequestException("존재하지 않거나 이미 삭제된 사용자입니다."));
 
         user.setDeleted(true);
 
         userJpaRepository.save(user);
-
-        return ResultDto.res(HttpStatus.OK, "SUCCESS", "회원 삭제 성공");
     }
 
     // ** 회원 비밀번호 변경 (Soft Delete 적용)
-    public ResultDto<?> changePassword(Integer userId, String currentPassword, String newPassword) {
+    public void changePassword(Integer userId, String currentPassword, String newPassword) {
         User user = userJpaRepository.findByUserIdAndIsDeletedFalse(userId)
                 .orElseThrow(() -> new BadRequestException("존재하지 않거나 삭제된 사용자입니다."));
 
@@ -109,8 +101,6 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
 
         userJpaRepository.save(user);
-
-        return ResultDto.res(HttpStatus.OK, "SUCCESS", "비밀번호 변경 성공");
     }
 
     private String getNickname() {

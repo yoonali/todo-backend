@@ -14,6 +14,7 @@ import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerApiNotFoundE
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerApiSuccess;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerInternetServerError;
 import peep.com.todo_backend.global.dto.ResultDto;
+import peep.com.todo_backend.user.domain.User;
 import peep.com.todo_backend.user.dto.UserSaveDto;
 import peep.com.todo_backend.user.dto.UserUpdateDto;
 import peep.com.todo_backend.user.dto.UserWithTeamsResponseDto;
@@ -33,10 +34,10 @@ public class UserController {
     @SwaggerApiNotFoundError
     @SwaggerInternetServerError
     @PostMapping
-    public ResponseEntity<?> saveUser(@Valid @RequestBody UserSaveDto dto) {
-        ResultDto<?> result = userService.saveUser(dto);
+    public ResponseEntity<ResultDto<?>> saveUser(@Valid @RequestBody UserSaveDto dto) {
+        userService.saveUser(dto);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "SUCCESS", "회원가입 성공"));
     }
 
     // ** 회원 정보 조회
@@ -56,12 +57,12 @@ public class UserController {
     @SwaggerApiNotFoundError
     @SwaggerInternetServerError
     @PutMapping("/updateUser")
-    public ResponseEntity<?> updateUser(
+    public ResponseEntity<ResultDto<?>> updateUser(
             @Valid @RequestBody UserUpdateDto dto,
             @AuthenticationPrincipal Integer userId) {
-        ResultDto<?> result = userService.updateUser(dto, userId);
+        userService.updateUser(dto, userId);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "SUCCESS", "회원 정보 수정 성공"));
     }
 
     // ** 회원 삭제
@@ -70,9 +71,9 @@ public class UserController {
     @SwaggerInternetServerError
     @DeleteMapping("/deleteUser")
     public ResponseEntity<?> deleteUser(@AuthenticationPrincipal Integer userId) {
-        ResultDto<?> result = userService.deleteUser(userId);
+        userService.deleteUser(userId);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "SUCCESS", "회원 삭제 성공"));
     }
 
     // ** 회원 비밀번호 변경
@@ -81,11 +82,11 @@ public class UserController {
     @SwaggerInternetServerError
     @PutMapping("/password")
     public ResponseEntity<?> changePassword(
-            @RequestParam(name = "userId") Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @RequestParam(name = "currentPassword") String currentPassword,
             @RequestParam(name = "newPassword") String newPassword) {
-        ResultDto<?> result = userService.changePassword(userId, currentPassword, newPassword);
+        userService.changePassword(userId, currentPassword, newPassword);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "SUCCESS", "비밀번호 변경 성공"));
     }
 }
