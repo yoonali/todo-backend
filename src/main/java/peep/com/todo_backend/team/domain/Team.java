@@ -36,7 +36,7 @@ public class Team extends BaseTimeEntity {
     private Integer teamId;
 
     @Comment("팀 이름")
-    @Column(length = 50, unique = true, nullable = false, name = "name")
+    @Column(length = 50, nullable = false, name = "name")
     private String name;
 
     @Comment("프로젝트 이름")

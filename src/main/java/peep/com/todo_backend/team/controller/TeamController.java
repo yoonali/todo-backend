@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import peep.com.todo_backend.global.Response.ApiSuccessResponse;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerApiNotFoundError;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerApiSuccess;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerInternetServerError;
@@ -31,7 +33,7 @@ import peep.com.todo_backend.team.service.TeamService;
 public class TeamController {
     private final TeamService teamService;
 
-    @SwaggerApiSuccess(summary = "팀 프로젝트 생성", description = "신규 프로젝트를 생성합니다.")
+    @SwaggerApiSuccess(summary = "팀 프로젝트 생성", description = "신규 프로젝트를 생성합니다.", value = ApiSuccessResponse.TEAM_SAVE)
     @SwaggerApiNotFoundError
     @SwaggerInternetServerError
     @PostMapping
@@ -40,7 +42,7 @@ public class TeamController {
         return ResponseEntity.ok(ResultDto.res(HttpStatus.OK, "SUCCESS", "팀이 성공적으로 생성되었습니다.", inviteLink));
     }
 
-    @SwaggerApiSuccess(summary = "팀 정보 조회", description = "팁 정보를 조회합니다.")
+    @SwaggerApiSuccess(summary = "팀 정보 조회", description = "팁 정보를 조회합니다.", value = ApiSuccessResponse.TEAM_GET)
     @SwaggerApiNotFoundError
     @SwaggerInternetServerError
     @GetMapping("/getTeam")
