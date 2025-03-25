@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import peep.com.todo_backend.auth.dto.LoginRequestDto;
 import peep.com.todo_backend.auth.dto.RefreshTokenRequestDto;
 import peep.com.todo_backend.auth.service.AuthService;
+import peep.com.todo_backend.global.Response.ApiSuccessResponse;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerApiNotFoundError;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerApiSuccess;
 import peep.com.todo_backend.global.customAnnotation.swagger.SwaggerInternetServerError;
@@ -24,7 +25,7 @@ public class AuthController {
     private final AuthService authService;
 
     // ** 로그인
-    @SwaggerApiSuccess(summary = "로그인", description = "사용자 로그인을 수행합니다.")
+    @SwaggerApiSuccess(summary = "로그인", description = "사용자 로그인을 수행합니다.", value = ApiSuccessResponse.USER_LOGIN)
     @SwaggerApiNotFoundError
     @SwaggerInternetServerError
     @PostMapping("/login")
@@ -33,7 +34,7 @@ public class AuthController {
     }
 
     // ** Access Token 갱신
-    @SwaggerApiSuccess(summary = "Access Token 갱신", description = "Refresh Token을 사용해 새로운 Access Token을 발급받습니다.")
+    @SwaggerApiSuccess(summary = "Access Token 갱신", description = "Refresh Token을 사용해 새로운 Access Token을 발급받습니다.", value = ApiSuccessResponse.USER_LOGIN)
     @SwaggerApiNotFoundError
     @SwaggerInternetServerError
     @PostMapping("/refresh")
