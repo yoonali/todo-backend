@@ -9,6 +9,8 @@ import peep.com.todo_backend.user.domain.User;
 
 public interface UserJpaRepository extends JpaRepository<User, Integer>, UserJpaCustomRepository {
 
+    Optional<User> findByUserId(Integer userId);
+
     // JPA 메서드 쿼리를 통해 자동으로 메서드 구현
     boolean existsByEmail(String email);
 
